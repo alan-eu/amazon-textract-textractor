@@ -1,0 +1,58 @@
+CITYPHARMA
+FACTURE NUMERO : 2413059
+Selas Pharmacie du Four Bonaparte
+DATE : 08/12/23
+26 rue du Four 75006
+Tél 01.46.33.20.81
+XXXXX AYMEN
+Idn : 75 2 03 2789
+1 rue jean pierre
+Fr 0745225625800016
+martinié
+94120 XXXXXXXX XXXX XXXX
+
+DOMICILIATION BANCAIRE
+CL
+XXXXX XXXXX XXXXXXXXXXX XX
+
+ORDONNANCE DU 07/12/23 PRESCRITE PAR LE DOCTEUR XXXXX MOHAMED
+IDENTIFIE XXXX LE NUMERO 921169264
+ASSURE : XXXXX
+AYMEN
+1 rue jean pierre
+martinié
+94120 XXXXXXXX XXXX XXXX
+NO. SS : 1XXXXXXXXXXXXXX
+MALADE : XXXXX
+JULIA
+né(e) le 24/12/18
+
+
+| REF   | DESIGNATION DU PRODUIT                        | AGREMENT   |   PRIX TTC | PRIX REMB   | QTE   |   MONTANT |
+|:------|:----------------------------------------------|:-----------|-----------:|:------------|:------|----------:|
+|       | ZYMA D 50 MIL UI AMP BUV 2ML BT2              |            |       2.17 | 2.17        |       |      2.17 |
+|       | Honoraire Niv7 Petit Cond.                    |            |       1.02 | 1.02        |       |      1.02 |
+|       | HDR 01/09/2020 H DE DISPENSATION REMBOURSABLE |            |       0.51 | 0.51        |       |      0.51 |
+|       | COQUELUSEDAL SUP ENF 10                       |            |       2.98 |             |       |      2.98 |
+|       | DOLIPRANE 2,4% SUSP BUV 100ML                 |            |       1.38 | 1.38        |       |      1.38 |
+|       | Honoraire Niv7 Petit Cond.                    |            |       1.02 | 1.02        |       |      1.02 |
+|       | FLUVERMAL SUSP BUV 30ML                       |            |       2.69 | 2.69        |       |      2.69 |
+|       | Honoraire Niv7 Petit Cond.                    |            |       1.02 | 1.02        |       |      1.02 |
+|       | TIXOCORTOL 19 ARROW SUSP NASALE               |            |       1.79 | 1.79        |       |      1.79 |
+|       | Honoraire Niv1 Petit Cond.                    |            |       1.02 | 1.02        |       |      1.02 |
+|       | ACTISOUFRE SOL FL100ML                        |            |       5.39 |             | 2     |     10.78 |
+
+|                                         |             |       |
+|:----------------------------------------|:------------|------:|
+| total de la facture                     |             | 26.38 |
+| total du par la caisse primaire -       | CPAM 94     |  7.22 |
+| total du par la caisse complémentaire - | MUT ALMERYS |  5.4  |
+| TOTAL ASSURE ( 90.26 Frcs ) -           |             | 13.76 |
+
+Faiture
+CITYPHARMA
+26, du Four - 75006 Pans
+Tél 10146332081-Fax01444110
+752032789 / aart. orth
+Siret 425 256 258 00016
+
