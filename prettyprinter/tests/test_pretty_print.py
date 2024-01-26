@@ -1,7 +1,8 @@
 from trp.trp2 import TDocument, TDocumentSchema, TextractBlockTypes
 import trp.trp2 as t2
 import trp.trp2_lending as tl
-from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2, convert_signatures_to_list_trp2
+from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, \
+    get_tables_string, convert_lending_from_trp2, convert_signatures_to_list_trp2, get_text_from_layout_json
 from textractprettyprinter import get_layout_csv_from_trp2
 import os
 import json
@@ -133,3 +134,49 @@ def test_layout_csv(caplog):
             csv_writer.writerows(page)
         # print(csv_output)
         assert layout_csv[0][20][3] == "20"
+
+def test_get_text_from_layout_json_multiple_headers_table():
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(SCRIPT_DIR, "data", "multi_headers_table.json")) as input_fp:
+        textract_json = json.load(input_fp)
+        markdown = get_text_from_layout_json(textract_json=textract_json, generate_markdown=True)
+        assert markdown and 1 in markdown
+        assert markdown[1] == """Page 2/2
+
+
+
+l'Assurance
+Maladie
+Agir ensemble, protéger chacun
+
+Haute-Garonne
+
+Mon numéro 2 XX XX XX XXX XXX XX
+Mon nom ou celui de mon ayant droit
+XXXXX Olwen
+
+# Attestation de droits à l'assurance maladie
+
+Valable du 05/09/2023 au 04/09/2024 sous réserve de changement dans la situation de l'assuré
+
+
+| Organisme de rattachement sécurité sociale   |   Code gestion | N° de sécurité sociale de l'assuré (à utiliser pour tous les bénéficiaires ci-dessous)   | Modulation du ticket modérateur   |
+|:---------------------------------------------|---------------:|:-----------------------------------------------------------------------------------------|:----------------------------------|
+| 01 311 2003                                  |             10 | 2 XX XX XX XXX XXX XX                                                                    |                                   |
+
+| Bénéficiaires(s) nom de famille suivi d'un événtuel nom d'usage   |    | N° de sécurité sociale du bénéficiaire (pour information)   | Né(e) le / rang   |
+|:------------------------------------------------------------------|:---|:------------------------------------------------------------|:------------------|
+| XXXXX Olwen a déclaré un médecin traitant                         |    | 2 XX XX XX XXX XXX XX                                       | 00/00/0000 1      |
+| XXXXX XXXXX Arwen a déclaré un médecin traitant                   |    | 2 XX XX XX XXX XXX XX                                       | 00/00/0000 1      |
+
+Toute attestation de droits antérieure est à détruire.
+
+Conformément au Règlement européen n°2016/679/UE du 27 avril 2016 et à la loi informatique et libertés du 6 janvier 1978 modifiée, vous
+disposez d'un droit d'accès et de rectification aux données vous concernant auprès du Directeur de votre organisme d'assurance maladie ou
+de son Délégué à la Protection des Données. En cas de difficultés dans l'application de ces droits, vous pouvez introduire une réclamation
+auprès de la Commission nationale Informatique et Libertés.
+La loi rend passible d'amende et/ou d'emprisonnement quiconque se rend coupable de fraudes ou de fausses déclarations (articles 441-1, et
+suivants du Code Pénal). En outre, la falsification ou l'établissement de faux documents, ainsi que l'utilisation de tels documents sont
+passibles d'une pénalité financière au titre des articles L.114-17-1 du Code de la Sécurité Sociale.
+
+"""
