@@ -1,7 +1,8 @@
 from trp.trp2 import TDocument, TDocumentSchema, TextractBlockTypes
 import trp.trp2 as t2
 import trp.trp2_lending as tl
-from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2, convert_signatures_to_list_trp2
+from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, \
+    get_tables_string, convert_lending_from_trp2, convert_signatures_to_list_trp2, get_text_from_layout_json
 from textractprettyprinter import get_layout_csv_from_trp2
 import os
 import json
@@ -133,3 +134,12 @@ def test_layout_csv(caplog):
             csv_writer.writerows(page)
         # print(csv_output)
         assert layout_csv[0][20][3] == "20"
+
+def test_get_text_from_layout_json_multiple_headers_table():
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    with (open(os.path.join(SCRIPT_DIR, "data", "multi_headers_table.json")) as input_fp,
+          open(os.path.join(SCRIPT_DIR, "data", "multi_headers_table.txt")) as expected_fp):
+        textract_json = json.load(input_fp)
+        markdown = get_text_from_layout_json(textract_json=textract_json, generate_markdown=True)
+        assert markdown and 1 in markdown
+        assert markdown[1] == expected_fp.read()

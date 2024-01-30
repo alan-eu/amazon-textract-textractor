@@ -1,6 +1,7 @@
 import os
 import warnings
 import logging
+from itertools import pairwise
 from trp.trp2 import TDocument
 from typing import List
 
@@ -100,7 +101,7 @@ class LinearizeLayout:
 
                 if table_block and "Relationships" in table_block:
                     table_content = {}
-                    headers = {}
+                    headers_rows = set()
                     max_row = 0
                     max_col = 0
                     for cell_rel in table_block["Relationships"]:
@@ -116,33 +117,38 @@ class LinearizeLayout:
                                     for r in range(cell_block.get('RowSpan', 1)):
                                         for c in range(cell_block.get('ColumnSpan', 1)):
                                             if "EntityTypes" in cell_block and "COLUMN_HEADER" in cell_block["EntityTypes"]:
-                                                headers[col_idx + c] = cell_text
-                                            else:
-                                                table_content[(row_idx + r, col_idx + c)] = cell_text
-                    
-                    table_data = []
-                    start_row = 2 if headers else 1
-                    for r in range(start_row, max_row + 1):
-                        row_data = []
-                        for c in range(1, max_col + 1):
-                            row_data.append(table_content.get((r, c), ""))
-                        table_data.append(row_data)
+                                                headers_rows.add(row_idx + r)
+                                            table_content[(row_idx + r, col_idx + c)] = cell_text
 
-                    header_list = [headers.get(c, "") for c in range(1, max_col + 1)]
-                
-                    try:
-                        from tabulate import tabulate
-                    except ImportError:
-                        raise ModuleNotFoundError(
-                            "Could not import tabulate python package. "
-                            "Please install it with `pip install tabulate`."
-                        )
-                        
-                    tab_fmt = "pipe" if self.generate_markdown else self.table_format
-                    '''If Markdown is enabled then default to pipe for tables'''
-                    
-                    table_text = tabulate(table_data, headers=header_list, tablefmt=tab_fmt)
-                    yield table_text
+                    if not headers_rows:
+                        headers_rows.add(0)
+
+                    for header_idx, next_header_idx in pairwise(sorted(list(headers_rows) + [max_row + 1])):
+                        table_data = []
+                        start_row = header_idx + 1
+                        for r in range(start_row, next_header_idx):
+                            row_data = []
+                            for c in range(1, max_col + 1):
+                                row_data.append(table_content.get((r, c), ""))
+                            table_data.append(row_data)
+
+                        header_list = [table_content.get((header_idx, c), "") for c in range(1, max_col + 1)]
+
+                        try:
+                            from tabulate import tabulate
+                        except ImportError:
+                            raise ModuleNotFoundError(
+                                "Could not import tabulate python package. "
+                                "Please install it with `pip install tabulate`."
+                            )
+
+                        tab_fmt = "pipe" if self.generate_markdown else self.table_format
+                        '''If Markdown is enabled then default to pipe for tables'''
+
+                        table_text = tabulate(table_data, headers=header_list, tablefmt=tab_fmt)
+                        if header_idx != 0:
+                            yield ""
+                        yield table_text
                     continue
                 else:
                     logger.warning("LAYOUT_TABLE detected but TABLES feature was not provided in API call. \
