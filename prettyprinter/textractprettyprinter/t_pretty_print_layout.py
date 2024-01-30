@@ -91,7 +91,7 @@ class LinearizeLayout:
             
             # Handle LAYOUT_TABLE type
             if not self.skip_table and block["BlockType"] == "LAYOUT_TABLE":
-                potential_table_blocks = [t for t in [b for b in self.j['Blocks'] if b['BlockType'] == 'TABLE']]
+                potential_table_blocks = [b for b in self.j['Blocks'] if b['BlockType'] == 'TABLE']
 
                 # Find the matching TABLE blocks for the LAYOUT_TABLE
                 matching_table_blocks = [
