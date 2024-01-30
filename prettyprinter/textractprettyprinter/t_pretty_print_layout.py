@@ -100,6 +100,7 @@ class LinearizeLayout:
                     if self._geometry_match(
                         table_block['Geometry']['BoundingBox'],
                         block['Geometry']['BoundingBox'],
+                        tolerance=0.01
                     )
                     and "Relationships" in table_block
                 ]
