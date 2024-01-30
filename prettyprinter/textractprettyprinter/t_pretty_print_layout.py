@@ -106,7 +106,7 @@ class LinearizeLayout:
                 ]
 
                 if not matching_table_blocks:
-                    # If no matching TABLE blocks found, try to find TABLE blocks that is inside the LAYOUT_TABLE
+                    # If no matching TABLE blocks found, try to find TABLE blocks that are inside the LAYOUT_TABLE
                     matching_table_blocks = [
                         table_block
                         for table_block in potential_table_blocks
