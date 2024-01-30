@@ -135,10 +135,21 @@ def test_layout_csv(caplog):
         # print(csv_output)
         assert layout_csv[0][20][3] == "20"
 
+
 def test_get_text_from_layout_json_multiple_headers_table():
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     with (open(os.path.join(SCRIPT_DIR, "data", "multi_headers_table.json")) as input_fp,
           open(os.path.join(SCRIPT_DIR, "data", "multi_headers_table.txt")) as expected_fp):
+        textract_json = json.load(input_fp)
+        markdown = get_text_from_layout_json(textract_json=textract_json, generate_markdown=True)
+        assert markdown and 1 in markdown
+        assert markdown[1] == expected_fp.read()
+
+
+def test_get_text_from_layout_json_multiple_table_inside_layout_table():
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    with (open(os.path.join(SCRIPT_DIR, "data", "multi_table_inside_layout_table.json")) as input_fp,
+          open(os.path.join(SCRIPT_DIR, "data", "multi_table_inside_layout_table.txt")) as expected_fp):
         textract_json = json.load(input_fp)
         markdown = get_text_from_layout_json(textract_json=textract_json, generate_markdown=True)
         assert markdown and 1 in markdown

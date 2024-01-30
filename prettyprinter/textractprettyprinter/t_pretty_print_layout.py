@@ -49,20 +49,20 @@ class LinearizeLayout:
                 return False
         return True
 
-    def _is_inside(self, inner_geom, outer_geom):
+    def _is_inside(self, inner_geom, outer_geom, tolerance=0.0):
         """Check if inner geometry is fully contained within the outer geometry."""
         inner_left, inner_top, inner_right, inner_bottom = (
-            inner_geom['Left'], 
-            inner_geom['Top'], 
-            inner_geom['Left'] + inner_geom['Width'], 
+            inner_geom['Left'],
+            inner_geom['Top'],
+            inner_geom['Left'] + inner_geom['Width'],
             inner_geom['Top'] + inner_geom['Height']
         )
         
         outer_left, outer_top, outer_right, outer_bottom = (
-            outer_geom['Left'], 
-            outer_geom['Top'], 
-            outer_geom['Left'] + outer_geom['Width'], 
-            outer_geom['Top'] + outer_geom['Height']
+            outer_geom['Left'] - tolerance,
+            outer_geom['Top'] - tolerance,
+            outer_geom['Left'] + outer_geom['Width'] + tolerance,
+            outer_geom['Top'] + outer_geom['Height'] + tolerance
         )
         
         return (inner_left >= outer_left and inner_right <= outer_right and 
@@ -91,15 +91,34 @@ class LinearizeLayout:
             
             # Handle LAYOUT_TABLE type
             if not self.skip_table and block["BlockType"] == "LAYOUT_TABLE":
-                table_data = []
-                # Find the matching TABLE block for the LAYOUT_TABLE
-                table_block = None
-                for potential_table in [b for b in self.j['Blocks'] if b['BlockType'] == 'TABLE']:
-                    if self._geometry_match(block['Geometry']['BoundingBox'], potential_table['Geometry']['BoundingBox']):
-                        table_block = potential_table
-                        break
+                potential_table_blocks = [b for b in self.j['Blocks'] if b['BlockType'] == 'TABLE']
 
-                if table_block and "Relationships" in table_block:
+                # Find the matching TABLE blocks for the LAYOUT_TABLE
+                matching_table_blocks = [
+                    table_block
+                    for table_block in potential_table_blocks
+                    if self._geometry_match(
+                        table_block['Geometry']['BoundingBox'],
+                        block['Geometry']['BoundingBox'],
+                        tolerance=0.01
+                    )
+                    and "Relationships" in table_block
+                ]
+
+                if not matching_table_blocks:
+                    # If no matching TABLE blocks found, try to find TABLE blocks that are inside the LAYOUT_TABLE
+                    matching_table_blocks = [
+                        table_block
+                        for table_block in potential_table_blocks
+                        if self._is_inside(
+                            table_block['Geometry']['BoundingBox'],
+                            block['Geometry']['BoundingBox'],
+                            tolerance=0.01
+                        )
+                        and "Relationships" in table_block
+                    ]
+
+                for table_block_idx, table_block in enumerate(matching_table_blocks):
                     table_content = {}
                     headers_rows = set()
                     max_row = 0
@@ -146,9 +165,11 @@ class LinearizeLayout:
                         '''If Markdown is enabled then default to pipe for tables'''
 
                         table_text = tabulate(table_data, headers=header_list, tablefmt=tab_fmt)
-                        if header_idx != 0:
+                        if table_block_idx > 0 or header_idx > 0:
                             yield ""
                         yield table_text
+
+                if matching_table_blocks:
                     continue
                 else:
                     logger.warning("LAYOUT_TABLE detected but TABLES feature was not provided in API call. \
